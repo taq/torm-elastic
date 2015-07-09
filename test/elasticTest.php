@@ -214,4 +214,14 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         ElasticUser::elasticImport();
         sleep(3);
     }
+
+    /**
+     * Test the document count
+     *
+     * @return null
+     */
+    public function testCount()
+    {
+        $this->assertEquals(2, ElasticUser::elasticCount());
+    }
 }

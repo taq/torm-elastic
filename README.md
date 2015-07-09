@@ -72,6 +72,12 @@ When importing a new data collection, we can use the `import` method, like:
 User::elasticImport();
 ```
 
+## Getting document count
+
+```
+User:;elasticCount();
+```
+
 ## Updating a document
 
 We can explicity update a document using:

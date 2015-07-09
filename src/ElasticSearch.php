@@ -263,5 +263,23 @@ trait ElasticSearch
         $cls = get_called_class();
         $cls::afterSave("updateElasticSearch");
     }
+
+    /**
+     * Return the document count
+     *
+     * @return int document count
+     */
+    public static function elasticCount()
+    {
+        $cls             = get_called_class();
+        $client          = self::getElasticSearchClient();
+        $params["index"] = self::getElasticSearchIndex();
+        $params["type"]  = self::getElasticSearchType();
+        $rtn             = $client->count($params);
+        if (sizeof($rtn) > 0) {
+            return intval($rtn["count"]);
+        }
+        return 0;
+    }
 }
 ?>
