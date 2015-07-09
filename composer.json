@@ -5,7 +5,7 @@
     "keywords": ["database","orm","activerecord", "elasticsearch"],
     "homepage": "http://github.com/taq/torm-elastic",
     "license": "GPL",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "authors": [
         {
             "name": "Eustaquio Rangel",

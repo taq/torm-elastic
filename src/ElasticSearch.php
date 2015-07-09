@@ -48,6 +48,7 @@ trait ElasticSearch
         self::$_elastic_configs[$cls]["index"]       = "TORM";
         self::$_elastic_configs[$cls]["keys"]        = [];
         self::$_elastic_configs[$cls]["last_status"] = null;
+        self::$_elastic_configs[$cls]["size"]        = 10;
         return false;
     }
 
@@ -132,6 +133,18 @@ trait ElasticSearch
     }
 
     /**
+     * Return the search size limit
+     *
+     * @return int size
+     */
+    public function getElasticSearchSize()
+    {
+        $cls = get_called_class();
+        self::_validateElasticSearchConfig($cls);
+        return intval(self::$_elastic_configs[$cls]["size"]);
+    }
+
+    /**
      * Update the ElasticSearch index
      *
      * @return null
@@ -158,18 +171,31 @@ trait ElasticSearch
     /**
      * Raw search on ElasticSearch
      *
-     * @param string $attr  attribute
-     * @param string $value value
-     * @param string $type  search type
+     * @param string $attr    attribute
+     * @param string $value   value
+     * @param string $options options array, or null
      *
      * @return mixed document
      */
-    public static function elasticRawSearch($attr, $value, $type = "match")
+    public static function elasticRawSearch($attr, $value, $options = null)
     {
+        // check for type
+        $type = "match";
+        if ($options && in_array("match", $options)) {
+            $type = $options["match"];
+        }
+
+        // check for size
+        $size = self::getElasticSearchSize();
+        if ($options && in_array("size", $options)) {
+            $type = intval($options["size"]);
+        }
+
         $client          = self::getElasticSearchClient();
         $params          = [];
         $params["index"] = self::getElasticSearchIndex();
         $params["type"]  = self::getElasticSearchType();
+        $params["size"]  = $size;
         $params["body"]["query"][$type][$attr] = $value;
         return $client->search($params);
     }
@@ -177,14 +203,15 @@ trait ElasticSearch
     /**
      * Search
      *
-     * @param string $value value
-     * @param string $type  search type
+     * @param string $attr    attribute
+     * @param string $value   value
+     * @param string $options options
      *
      * @return mixed document
      */
-    public static function elasticSearch($attr, $value, $type = "match")
+    public static function elasticSearch($attr, $value, $options = null)
     {
-        $rtn  = self::elasticRawSearch($attr, $value, $type);
+        $rtn  = self::elasticRawSearch($attr, $value, $options);
         $vals = [];
         foreach ($rtn["hits"]["hits"] as $row) {
             $row_val = [];

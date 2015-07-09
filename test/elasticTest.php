@@ -47,6 +47,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         // TORM\Connection::setDriver("mysql");
         TORM\Factory::setFactoriesPath("./factories");
         TORM\Log::enable(false);
+        self::_deleteAll();
 
         self::$user        = new ElasticUser();
         self::$user->id    = 1;
@@ -203,11 +204,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
      */
     public function testImport() 
     {
-        self::$user->deleteElastic();
-        foreach (ElasticUser::all() as $obj) {
-            $obj->deleteElastic();
-        }
-        sleep(3); 
+        self::_deleteAll();
         $rtn = ElasticUser::elasticSearch("name", "john");
         $this->assertTrue(sizeof($rtn) == 0);
 
@@ -222,6 +219,27 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
      */
     public function testCount()
     {
-        $this->assertEquals(2, ElasticUser::elasticCount());
+        self::_deleteAll();
+        self::$user->updateElasticSearch();
+        sleep(1);
+        $this->assertEquals(1, ElasticUser::elasticCount());
+    }
+
+    /**
+     * Delete all documents
+     *
+     * @return null
+     */
+    private static function _deleteAll()
+    {
+        if (self::$user) {
+            self::$user->deleteElastic();
+        }
+        foreach (ElasticUser::all() as $obj) {
+            if ($obj) {
+                $obj->deleteElastic();
+            }
+        }
+        sleep(2);
     }
 }
