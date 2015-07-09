@@ -10,7 +10,7 @@ Change (or create, if needed) your Composer file to include it:
 ```
 {
     "require": {
-        "taq/torm-elasticsearch": ">=0"
+        "taq/torm-elastic": ">=0"
     }
 }
 ```
