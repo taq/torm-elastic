@@ -56,7 +56,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         self::$user->code  = "12345";
         self::$user->level = 1;
         self::$user->save();
-        sleep(1);
+        ElasticUser::refreshElastic();
 
         ElasticUser::setElasticSearchIndex("torm");
         ElasticUser::setElasticSearchValues(null);
@@ -219,7 +219,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(sizeof($rtn) == 0);
 
         ElasticUser::elasticImport();
-        sleep(3);
+        ElasticUser::refreshElastic();
     }
 
     /**
@@ -231,7 +231,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
     {
         self::_deleteAll();
         self::$user->updateElasticSearch();
-        sleep(1);
+        ElasticUser::refreshElastic();
         $this->assertEquals(1, ElasticUser::elasticCount());
     }
 
@@ -288,6 +288,6 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
                 $obj->deleteElastic();
             }
         }
-        sleep(2);
+        ElasticUser::refreshElastic();
     }
 }
