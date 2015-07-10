@@ -20,7 +20,7 @@ Change (or create, if needed) your Composer file to include it:
 Just open your model and insert the trait, like:
 
 ```
-class User extends User {
+class User extends TORM\Model {
     use TORM\ElasticSearch;
 }
 User::setElasticSearchIndex("myapp");
