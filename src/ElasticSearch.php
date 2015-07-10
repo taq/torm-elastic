@@ -202,7 +202,7 @@ trait ElasticSearch
         // check for size
         $size = self::getElasticSearchSize();
         if ($options && in_array("size", $options)) {
-            $type = intval($options["size"]);
+            $size = intval($options["size"]);
         }
 
         $client          = self::getElasticSearchClient();
