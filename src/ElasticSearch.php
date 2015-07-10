@@ -211,25 +211,29 @@ trait ElasticSearch
      */
     public static function elasticRawSearch($attr, $value, $options = null)
     {
-        // check for type
-        $type = "match";
-        if ($options && array_key_exists("match", $options)) {
-            $type = $options["match"];
-        }
+        try {
+            // check for type
+            $type = "match";
+            if ($options && array_key_exists("match", $options)) {
+                $type = $options["match"];
+            }
 
-        // check for size
-        $size = self::getElasticSearchSize();
-        if ($options && array_key_exists("size", $options)) {
-            $size = intval($options["size"]);
-        }
+            // check for size
+            $size = self::getElasticSearchSize();
+            if ($options && array_key_exists("size", $options)) {
+                $size = intval($options["size"]);
+            }
 
-        $client          = self::getElasticSearchClient();
-        $params          = [];
-        $params["index"] = self::getElasticSearchIndex();
-        $params["type"]  = self::getElasticSearchType();
-        $params["size"]  = $size;
-        $params["body"]["query"][$type][$attr] = $value;
-        return $client->search($params);
+            $client          = self::getElasticSearchClient();
+            $params          = [];
+            $params["index"] = self::getElasticSearchIndex();
+            $params["type"]  = self::getElasticSearchType();
+            $params["size"]  = $size;
+            $params["body"]["query"][$type][$attr] = $value;
+            return $client->search($params);
+        } catch (\Exception $e) {
+        }
+        return null;
     }
 
     /**
@@ -331,13 +335,17 @@ trait ElasticSearch
      */
     public static function elasticCount()
     {
-        $cls             = get_called_class();
-        $client          = self::getElasticSearchClient();
-        $params["index"] = self::getElasticSearchIndex();
-        $params["type"]  = self::getElasticSearchType();
-        $rtn             = $client->count($params);
-        if (sizeof($rtn) > 0) {
-            return intval($rtn["count"]);
+        try {
+            $cls             = get_called_class();
+            $client          = self::getElasticSearchClient();
+            $params["index"] = self::getElasticSearchIndex();
+            $params["type"]  = self::getElasticSearchType();
+            $rtn             = $client->count($params);
+
+            if (sizeof($rtn) > 0) {
+                return intval($rtn["count"]);
+            }
+        } catch (\Exception $e) {
         }
         return 0;
     }
