@@ -60,6 +60,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
 
         ElasticUser::setElasticSearchIndex("torm");
         ElasticUser::setElasticSearchValues(null);
+        TORM\ElasticSearch::avoidElasticOnTests(false);
     }
 
     /**
@@ -223,6 +224,19 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         self::$user->updateElasticSearch();
         sleep(1);
         $this->assertEquals(1, ElasticUser::elasticCount());
+    }
+
+    /**
+     * Test if we can avoid updating when on test enviroment (which,in case, we
+     * are here)
+     *
+     * @return null
+     */
+    public function testAvoidTest()
+    {
+        $this->assertNotNull(self::$user->updateElasticSearch());
+        TORM\ElasticSearch::avoidElasticOnTests(true);
+        $this->assertNull(self::$user->updateElasticSearch());
     }
 
     /**

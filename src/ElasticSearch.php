@@ -14,8 +14,8 @@ namespace TORM;
 
 trait ElasticSearch
 {
-    private static $_elastic_configs = array();
-    private static $_elastic_client  = array();
+    private static $_elastic_configs        = array();
+    private static $_elastic_client         = array();
 
     /**
      * Set the ElasticSearch index. This should be your application name or
@@ -62,9 +62,18 @@ trait ElasticSearch
         $cls = get_called_class();
         self::_validateElasticSearchConfig($cls);
         $idx = self::$_elastic_configs[$cls]["index"];
-        $env = getenv("TORM_ENV");
-        $idx = preg_match('/^test$/i', $env) > 0 ? $idx."_test" : $idx;
+        $idx = self::_testEnv() ? $idx."_test" : $idx;
         return $idx;
+    }
+
+    /**
+     * Check if running on test enviroment
+     *
+     * @return boolean on test ennviroment
+     */
+    private static function _testEnv()
+    {
+        return preg_match('/^test$/i', getenv("TORM_ENV")) > 0;
     }
 
     /**
@@ -168,6 +177,11 @@ trait ElasticSearch
      */
     public function updateElasticSearch()
     {
+        // if avoid indexing on tests, returns null
+        if (self::_testEnv() && ElasticSearchConfigs::isAvoidingOnTests()) {
+            return null;
+        }
+
         $cls             = get_called_class();
         $client          = self::getElasticSearchClient();
         $params          = [];
@@ -175,10 +189,11 @@ trait ElasticSearch
         $params["index"] = self::getElasticSearchIndex();
         $params["type"]  = self::getElasticSearchType();
         $params["body"]  = self::getElasticSearchValues();
+
         try {
             $rtn = $client->index($params);
         } catch (Exception $e) {
-            $rtn = false;
+            $rtn = null;
         }
 
         self::$_elastic_configs[$cls]["last_status"] = $rtn;
@@ -324,6 +339,18 @@ trait ElasticSearch
             return intval($rtn["count"]);
         }
         return 0;
+    }
+
+    /**
+     * Avoid indexing on the test environment
+     *
+     * @param boolean $avoid or not
+     *
+     * @return null
+     */
+    public static function avoidElasticOnTests($avoid)
+    {
+        ElasticSearchConfigs::avoidOnTests($avoid);
     }
 }
 ?>
