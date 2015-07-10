@@ -60,6 +60,15 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
 
         ElasticUser::setElasticSearchIndex("torm");
         ElasticUser::setElasticSearchValues(null);
+    }
+
+    /**
+     * Run before each test
+     *
+     * @return null
+     */
+    public function setUp()
+    {
         TORM\ElasticSearch::avoidElasticOnTests(false);
     }
 
@@ -237,6 +246,31 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull(self::$user->updateElasticSearch());
         TORM\ElasticSearch::avoidElasticOnTests(true);
         $this->assertNull(self::$user->updateElasticSearch());
+    }
+
+    /**
+     * Test if document is destroyed when the database record is destroyed
+     *
+     * @return null
+     */
+    public function testDestroy()
+    {
+        $other        = new ElasticUser();
+        $other->name  = "John Doe Grandfather";
+        $other->email = "grandfather@doe.com";
+        $other->level = 1;
+        $other->code  = "00000";
+        $this->assertTrue($other->save());
+        ElasticUser::refreshElastic();
+        
+        $rtn = ElasticUser::elasticSearch("name", "Grandfather");
+        $this->assertTrue(sizeof($rtn) > 0);
+
+        $this->assertTrue($other->destroy());
+        ElasticUser::refreshElastic();
+        
+        $rtn = ElasticUser::elasticSearch("name", "Grandfather");
+        $this->assertTrue(sizeof($rtn) < 1);
     }
 
     /**

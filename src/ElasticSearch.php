@@ -321,6 +321,7 @@ trait ElasticSearch
     {
         $cls = get_called_class();
         $cls::afterSave("updateElasticSearch");
+        $cls::afterDestroy("deleteElastic");
     }
 
     /**
@@ -351,6 +352,18 @@ trait ElasticSearch
     public static function avoidElasticOnTests($avoid)
     {
         ElasticSearchConfigs::avoidOnTests($avoid);
+    }
+
+    /**
+     * Refresh index
+     *
+     * @return mixed refreshed
+     */
+    public static function refreshElastic()
+    {
+        $client          = self::getElasticSearchClient();
+        $params["index"] = self::getElasticSearchIndex();
+        return $client->indices()->refresh($params);
     }
 }
 ?>
