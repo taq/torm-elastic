@@ -195,13 +195,13 @@ trait ElasticSearch
     {
         // check for type
         $type = "match";
-        if ($options && in_array("match", $options)) {
+        if ($options && array_key_exists("match", $options)) {
             $type = $options["match"];
         }
 
         // check for size
         $size = self::getElasticSearchSize();
-        if ($options && in_array("size", $options)) {
+        if ($options && array_key_exists("size", $options)) {
             $size = intval($options["size"]);
         }
 
