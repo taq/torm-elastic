@@ -373,5 +373,21 @@ trait ElasticSearch
         $params["index"] = self::getElasticSearchIndex();
         return $client->indices()->refresh($params);
     }
+
+    /**
+     * Delete index
+     *
+     * @return mixed deleted
+     */
+    public static function deleteElasticSearchIndex()
+    {
+        try {
+            $client          = self::getElasticSearchClient();
+            $params["index"] = self::getElasticSearchIndex();
+            return $client->indices()->delete($params);
+        } catch (\Exception $e) {
+        }
+        return null;
+    }
 }
 ?>
