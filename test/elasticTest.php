@@ -58,7 +58,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         self::$user->save();
         sleep(1);
 
-        ElasticUser::setElasticSearchIndex("torm_tests");
+        ElasticUser::setElasticSearchIndex("torm");
         ElasticUser::setElasticSearchValues(null);
     }
 
@@ -69,7 +69,7 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
      */
     public function testIndexName() 
     {
-        $this->assertEquals("torm_tests", ElasticUser::getElasticSearchIndex());
+        $this->assertEquals("torm_test", ElasticUser::getElasticSearchIndex());
     }
 
     /**

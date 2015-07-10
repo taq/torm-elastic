@@ -61,7 +61,10 @@ trait ElasticSearch
     {
         $cls = get_called_class();
         self::_validateElasticSearchConfig($cls);
-        return self::$_elastic_configs[$cls]["index"];
+        $idx = self::$_elastic_configs[$cls]["index"];
+        $env = getenv("TORM_ENV");
+        $idx = preg_match('/^test$/i', $env) > 0 ? $idx."_test" : $idx;
+        return $idx;
     }
 
     /**
