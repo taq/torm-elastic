@@ -133,6 +133,20 @@ trait ElasticSearch
     }
 
     /**
+     * Set the seach size limit
+     *
+     * @param int $size limit
+     *
+     * @return null/
+     */
+    public function setElasticSearchSize($size = 10)
+    {
+        $cls = get_called_class();
+        self::_validateElasticSearchConfig($cls);
+        self::$_elastic_configs[$cls]["size"] = $size;
+    }
+
+    /**
      * Return the search size limit
      *
      * @return int size
