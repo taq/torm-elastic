@@ -232,8 +232,8 @@ trait ElasticSearch
         try {
             // check for type
             $type = "match";
-            if ($options && array_key_exists("match", $options)) {
-                $type = $options["match"];
+            if ($options && array_key_exists("type", $options)) {
+                $type = $options["type"];
             }
 
             // check for size
