@@ -94,6 +94,16 @@ We can explicity delete a document using:
 $obj->deleteElasticSearch();
 ```
 
+## Disabling
+
+We can disable updating documents using
+
+```
+TORM\ElasticSearchConfigs::disabled(true);
+```
+
+and enable again sending `false` on the same method.
+
 ## Testing
 
 If using a `TORM` test enviroment (defined setting the enviroment var `TORM_ENV`
@@ -102,5 +112,5 @@ to `test`), the index name will be automatically changed to `<index_name>_test`.
 If we want to avoid updating a document on the test enviroment, we can use 
 
 ```
-TORM\ElasticSearch::avoidElasticOnTests(true);
+TORM\ElasticSearchConfigs::avoidOnTests(true);
 ```

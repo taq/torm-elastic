@@ -69,7 +69,8 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        TORM\ElasticSearch::avoidElasticOnTests(false);
+        TORM\ElasticSearchConfigs::avoidOnTests(false);
+        TORM\ElasticSearchConfigs::disabled(false);
     }
 
     /**
@@ -246,6 +247,20 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull(self::$user->updateElasticSearch());
 
         TORM\ElasticSearch::avoidElasticOnTests(true);
+        $this->assertNull(self::$user->updateElasticSearch());
+        $this->assertNull(self::$user->deleteElastic());
+    }
+
+    /**
+     * Test if it is disabled
+     *
+     * @return null
+     */
+    public function testDisabled()
+    {
+        $this->assertNotNull(self::$user->updateElasticSearch());
+
+        TORM\ElasticSearchConfigs::disabled(true);
         $this->assertNull(self::$user->updateElasticSearch());
         $this->assertNull(self::$user->deleteElastic());
     }

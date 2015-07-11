@@ -171,14 +171,32 @@ trait ElasticSearch
     }
 
     /**
+     * Return if is not updating documents
+     *
+     * @return boolean updating or not
+     */
+    private static function _isUpdating()
+    {
+        // if avoid indexing on tests
+        if (self::_testEnv() && ElasticSearchConfigs::isAvoidingOnTests()) {
+            return false;
+        }
+
+        // if is disabled
+        if (ElasticSearchConfigs::isDisabled()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Update the ElasticSearch index
      *
      * @return null
      */
     public function updateElasticSearch()
     {
-        // if avoid indexing on tests, returns null
-        if (self::_testEnv() && ElasticSearchConfigs::isAvoidingOnTests()) {
+        if (!self::_isUpdating()) {
             return null;
         }
 
@@ -268,8 +286,7 @@ trait ElasticSearch
      */
     public function deleteElastic()
     {
-        // if avoid indexing on tests, returns null
-        if (self::_testEnv() && ElasticSearchConfigs::isAvoidingOnTests()) {
+        if (!self::_isUpdating()) {
             return null;
         }
 

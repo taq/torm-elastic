@@ -26,6 +26,7 @@ namespace TORM;
 class ElasticSearchConfigs
 {
     private static $_elastic_avoid_test_env = false;
+    private static $_elastic_disabled       = false;
 
     /**
      * Set if avoid updating a document on test enviroment
@@ -47,6 +48,28 @@ class ElasticSearchConfigs
     public function isAvoidingOnTests()
     {
         return self::$_elastic_avoid_test_env;
+    }
+
+    /**
+     * Set if disabled flag
+     *
+     * @param boolean $disabled or not
+     *
+     * @return null
+     */
+    public function disabled($disabled)
+    {
+        self::$_elastic_disabled = $disabled;
+    }
+
+    /**
+     * Check if is disabled
+     *
+     * @return boolean disabled or not
+     */
+    public function isDisabled()
+    {
+        return self::$_elastic_disabled;
     }
 }
 ?>
