@@ -268,6 +268,11 @@ trait ElasticSearch
      */
     public function deleteElastic()
     {
+        // if avoid indexing on tests, returns null
+        if (self::_testEnv() && ElasticSearchConfigs::isAvoidingOnTests()) {
+            return null;
+        }
+
         $cls             = get_called_class();
         $client          = self::getElasticSearchClient();
         $params          = [];

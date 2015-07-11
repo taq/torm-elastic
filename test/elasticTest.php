@@ -244,8 +244,10 @@ class ElasticSearchTest extends PHPUnit_Framework_TestCase
     public function testAvoidTest()
     {
         $this->assertNotNull(self::$user->updateElasticSearch());
+
         TORM\ElasticSearch::avoidElasticOnTests(true);
         $this->assertNull(self::$user->updateElasticSearch());
+        $this->assertNull(self::$user->deleteElastic());
     }
 
     /**
